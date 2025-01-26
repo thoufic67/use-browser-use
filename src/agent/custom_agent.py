@@ -20,11 +20,26 @@ from browser_use.browser.browser import Browser
 from browser_use.browser.context import BrowserContext
 from browser_use.browser.views import BrowserStateHistory
 from browser_use.controller.service import Controller
-from browser_use.telemetry.views import (
-    AgentEndTelemetryEvent,
-    AgentRunTelemetryEvent,
-    AgentStepErrorTelemetryEvent,
-)
+try:
+    from browser_use.telemetry.views import (
+        AgentStepErrorTelemetryEvent,
+        AgentStepStartTelemetryEvent,
+        AgentStepEndTelemetryEvent,
+        AgentStepActionTelemetryEvent,
+    )
+except ImportError:
+    # Create stub classes if imports fail
+    class BaseTelemetryEvent:
+        def __init__(self, *args, **kwargs):
+            pass
+        
+        def to_dict(self):
+            return {}
+
+    class AgentStepErrorTelemetryEvent(BaseTelemetryEvent): pass
+    class AgentStepStartTelemetryEvent(BaseTelemetryEvent): pass
+    class AgentStepEndTelemetryEvent(BaseTelemetryEvent): pass
+    class AgentStepActionTelemetryEvent(BaseTelemetryEvent): pass
 from browser_use.utils import time_execution_async
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import (
